@@ -3,6 +3,7 @@ package model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import entities.dominion;
 
 public class reserva {
 
@@ -13,6 +14,11 @@ public class reserva {
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public reserva(Integer roomNumber, Date checkin, Date checkout) {
+
+        if (!checkout.after(checkin)) {
+            throw new dominion("Erro na reserva: as datas devem ser futuras");
+        }
+
         this.roomNumber = roomNumber;
         this.checkin = checkin;
         this.checkout = checkout;
@@ -36,27 +42,27 @@ public class reserva {
 
     public long duracao() {
         long diff = checkout.getTime() - checkin.getTime();
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MICROSECONDS);
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public String updateDates(Date checkin, Date checkout) {
+    public void updateDates(Date checkin, Date checkout) {
 
         Date now = new Date();
         if (checkin.before(now) || checkout.before(now)) {
-            return " Erro na Reserva: as datas tem que ser futuras";
+            throw new dominion("Erro na reserva: as datas devem ser futuras");
         }
+
         if (!checkout.after(checkin)) {
-            return " Erro na reserva a datas tem que ser futuras";
+            throw new dominion("Erro na reserva: a data de check-out deve ser após o check-in");
         }
 
         this.checkin = checkin;
         this.checkout = checkout;
-        return  null;
     }
 
     @Override
     public String toString() {
-        return "room"
+        return "Room "
                 + roomNumber
                 + ", check-in: "
                 + sdf.format(checkin)
@@ -66,5 +72,4 @@ public class reserva {
                 + duracao()
                 + " Noites";
     }
-
 }
