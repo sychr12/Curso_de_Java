@@ -32,19 +32,15 @@ public class Main {
             System.err.println("Check-out na data (dd/mm/yyyy)");
             checkout = sdf.parse(sc.next());
 
+            String error = reserva.updateDates(checkin, checkout);
+            if (error != null) {
+                System.out.println(" Erro ao fazer a reserva" + error);
+            } else {
+                System.out.println("Reserva + " + reserva);
 
-            Date now = new Date();
-            if(checkin.before(now) || checkout.before(now)){
-                System.out.println("Erro na Reserva: as datas tem que ser futuras");
-            } else if  (!checkout.after(checkin)) {
-                System.out.println("Erro na reserva a datas tem que ser futuras");
             }
 
-            reserva.updateDates(checkin, checkout);
-            System.out.println("Reserva + " + reserva);
-
+            sc.close();
         }
-
-        sc.close();
     }
 }
